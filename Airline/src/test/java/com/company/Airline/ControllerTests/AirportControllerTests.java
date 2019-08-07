@@ -41,10 +41,12 @@ public class AirportControllerTests {
         mockMvc = MockMvcBuilders.standaloneSetup(airportsController).build();
 
         airport1 = new Airports();
+        airport1.setAirportId(1);
         airport1.setAirportName("Dallas/Fort Worth International Airport");
         airport1.setAirportAddress("2400 Aviation Dr, DFW Airport, TX 75261");
 
         airport2 = new Airports();
+        airport2.setAirportId(2);
         airport2.setAirportName("Baltimore/Washington International Airport");
         airport2.setAirportAddress("Baltimore, MD 21240");
 
@@ -62,16 +64,16 @@ public class AirportControllerTests {
     }
 
     @Test
-    public void shouldReturnFlight() throws Exception{
+    public void shouldReturnAirport() throws Exception{
         airportsList = Arrays.asList(airport1);
         when(mockAirportsService.getAirport(airportsList.get(0).getAirportId())).thenReturn(airport1);
 
 
-        mockMvc.perform(get("/airports/{id}" + airportsList.get(0).getAirportId()))
+        mockMvc.perform(get("/airports/" + airportsList.get(0).getAirportId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(airportsList.get(0).getAirportId())));
-
+                .andExpect(jsonPath("$.airlineId").value(airport1.getAirportId()))
+                .andExpect(jsonPath("$.airlineName").value(airport1.getAirportName()))
+                .andExpect(jsonPath("$.airlineAddress").value(airport1.getAirportAddress()));
         verify(mockAirportsService).getAirport(airportsList.get(0).getAirportId());
     }
 }

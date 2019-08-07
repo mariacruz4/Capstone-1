@@ -46,9 +46,11 @@ public class AirlineControllerTests {
         mockMvc = MockMvcBuilders.standaloneSetup(airlinesController).build();
 
         airline1 = new Airlines();
+        airline1.setAirlineId(1);
         airline1.setAirlineName("American Airlines");
 
         airline2 = new Airlines();
+        airline2.setAirlineId(2);
         airline2.setAirlineName("Southwest Airlines");
 
         airlinesList = Arrays.asList(airline1, airline2);
@@ -64,31 +66,17 @@ public class AirlineControllerTests {
     }
 
     @Test
-    public void shouldAddAirline() throws Exception{
-
-        Airlines airline = new Airlines();
-
-        airline.setAirlineName("Avianca");
-
-        when(mockAirlinesService.addAirline(airline)).thenReturn(airline);
-
-        mockMvc.perform(post("/airlines")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-    @Test
     public void shouldReturnAirline() throws Exception{
         airlinesList = Arrays.asList(airline1);
         when(mockAirlinesService.getAirline(airlinesList.get(0).getAirlineId())).thenReturn(airline1);
 
 
-        mockMvc.perform(get("/airlines/{id}" + airlinesList.get(0).getAirlineName()))
+        mockMvc.perform(get("/airlines/" + airlinesList.get(0).getAirlineId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(airlinesList.get(0).getAirlineId())));
-
+                .andExpect(jsonPath("$.airlineId").value(airline1.getAirlineId()))
+                .andExpect(jsonPath("$.airlineName").value(airline1.getAirlineName()));
         verify(mockAirlinesService).getAirline(airlinesList.get(0).getAirlineId());
     }
 }
+
 
