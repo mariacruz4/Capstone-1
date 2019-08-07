@@ -1,0 +1,117 @@
+Maria Cruz
+Capstone 1 Documentation
+
+Flights DTO:
+
+	-Connecting to SQL Server via the flights table.
+	-Created ID and made it auto-increment.
+	-Created vairables and made sure they're all not null.
+	-Added airlineId and airportId because they are foreign keys.
+	-Created ManyToOne relationships throught the classes IDs.
+	-Getters and Setters
+
+
+Airports DTO:
+
+	-Connecting to SQL Server via airports table
+	-Created ID and made it auto-increment.
+	-Created vairables and made sure they're all not null.
+	-OneToMany relationship mapped by airports
+	-Getters and setters
+
+Airlines DTO:
+	-Connecting to SQL Server via airlines table
+	-Created ID and made it auto-increment.
+	-Created vairables and made sure they're all not null.
+	-OneToMany relationship mapped by airlines
+	-Getters and setters
+
+Flights DAO:
+
+	-Extends to JpaRepository by Flights and Integer(primary key type)
+	-List of methods that will be used.
+
+Airlines DAO:
+
+	-Extends to JpaRepository by Airlines and Integer(primary key type)
+	-No methods because all is provided by JpaRepository
+
+Airports DAO:
+
+	-Extends to JpaRepository by Airports and Integer(primary key type)
+	-No methods because all is provided by JpaRepository
+
+Flights Service Layer:
+
+	-Created FlightsServiceInterface which holds all the methods available
+	-Created FlightsService which extends to FlightsServiceInterface for the methods
+	-Calls in flightsRepo
+	-AddFlight, save information input by the user and then returns that flight.
+	-GetFlight, gets flight by Id and returns to user flight information.
+	-GetFlightByPrice, gets the flights by price and returns the flight list.
+	-GetFlightByDistance, gets the flights by distance and returns the flight list.
+	-GetFlightPriceByFlightDistance
+		-sets fligthPrice to 0.0
+		-if the distance input by the user is less than 500, return the flightPrice of flights within that range.
+		-if the distance input by the user is more than 500 and less than 1000, return the flightPrice of flights within that range.
+		-if the distance input by the user is more than 1000 and less than 2000, return the flightPrice of flights within that range.
+		-if the distance input by the user is more than 2000, return the flightPrice of flights within that range.
+		-return flightPrice
+	-GetFlightPriceByAirportId
+		-Created flightsList
+		-for loop that goes through every flight in the database.
+		-Created currId, which will equal the current airportId in the list.
+		-if statement compairing currId to airportId1 and airportId2 entered by the user.
+		-Adding all airportId1 and airportId2 to flightsList
+		-Sorting flightsList in ascending order by flightPrice.
+		-Returning flightsList
+	-GetFlightDistanceByAirportId
+		-Created flightsList
+		-for loop that goes through every flight in the database.
+		-Created currId, which will equal the current airportId in the list.
+		-if statement compairing currId to airportId1 and airportId2 entered by the user.
+		-Adding all airportId1 and airportId2 to flightsList
+		-Sorting flightsList in ascending order by flightDistance.
+		-Returning flightsList
+	-GetFlightByAirlineIdAndAirportId, get flights by specific airportId and airlineId
+
+Airlines Service Layer:
+
+	-AddAirline, saves information input by the user and returns that airline
+	-GetAirline, gets airline by Id
+	-DeleteAirline, deletes airline by Id
+
+Airports Service Layer:
+
+	-GetAirport, gets airport by Id
+
+FlightsController:
+
+	-@Rest Controller, lets it know this is a controller
+	-@RequestMapping, all routes will begin with "/flights"
+	-Calls in FlightsService
+	-@PostMapping addFlight, allows user to input flight information, save the flight, and return.
+	-@GetMapping getAllFlights, retrieves all the flights from the database.
+	-@GetMapping(value = "/{id}") getFlight, user will enter a specific flightId and that flight will be returned.
+	-@GetMapping(value = "/distance/{flightDistance}") getFlightByDistance, allows user to search for the flights according to the distance they input.
+	-@GetMapping(value = "/price/{flightPrice}") getFlightByPrice, allows user to search flights according to the price they input.
+	-@GetMapping(value = "/price/distance/{flightDistance}") getFlightsPriceByFlightsDistance, allows user to search for flight prices depending on the distance they enter.
+	-@GetMapping(value = "/price/{airportId1}/{airportId2}") getFlightPriceByAirportId, allows the user to search for the cheapest flights among 2 airports using airportId.
+	-@GetMapping(value = "/distance/{airportId1}/{airportId2}") getFlightDistanceByAirportId, allows the user to search for the shortest flights among 2 airports using airportId.
+	-@GetMapping(value = "/airport/{airportId}/airline/{airlineId}") getFlightsByAirlineIdAndAirportId, allows user to get flights by specific airlineId and airportId.
+
+AirlinesController:
+
+	-@Rest Controller, lets it know this is a controller
+	-@RequestMapping, all routes will begin with "/airlines"
+	-Calls in AirlinesService
+	-@PostMapping addAirline, allows user to input airline information, save the airline, and returns the new flight.
+	-@GetMapping(value = "/{id}") getAirline, user will enter a specific airlineId and that airline will be returned.
+	-@DeleteMapping(value = "/{id}") deleteAirline, user will input the airlineId of the airline they would like to remove.
+
+AirportsController:
+
+	-@Rest Controller, lets it know this is a controller
+	-@RequestMapping, all routes will begin with "/airports"
+	-Calls in AirportsService
+	-@GetMapping(value = "/{id}") getAirport, user will enter a specific airportId and that airport will be returned.
